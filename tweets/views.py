@@ -5,6 +5,9 @@ from django.shortcuts import render
 from tweets.models import Tweet
 
 # Create your views here.
+def home_view(request, *args, **kwargs):
+	return render(request=request, template_name="pages/home.html", status=200, context={})
+
 def all_tweet_view(request, *args, **kwargs):
 		res_tweet = Tweet.objects.get(id=3)
 
