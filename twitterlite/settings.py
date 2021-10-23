@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-j86^a1a*!#xrp3=iltkci7417@l_&=0ffi!6!pc5v#s&4ou(3=
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+MAX_TWEET_LENGTH = 240
 
 # Application definition
 
@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #third-party-libs
+    'rest_framework',
+    #internal
     'tweets'
 ]
 

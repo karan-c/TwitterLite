@@ -1,5 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Home Page</h1>
+<h1>Feed Page</h1>
+
+<div class="container" id="tweet-list">
+
+</div>
+<script>
+    let api = '/tweet'
+    var tweetList = []
+    fetch(api).then (res => 
+        res.json()
+    ).then(res => {
+        tweetList = res.response
+        el = document.getElementById('tweet-list')
+        console.log(tweetList)
+    }).catch(err => {
+        console.log(err)
+    })
+</script>
 {% endblock content %}
