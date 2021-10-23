@@ -6,7 +6,7 @@ from .models import Tweet
 class TweetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tweet
-        fields = ['content', 'timestamp']
+        fields = ['content', 'timestamp', 'id']
 
     # def validate_content(self, value):
     #     if (len(value) > MAX_TWEET_LENGTH):

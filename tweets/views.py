@@ -13,13 +13,11 @@ from tweets.serializers import TweetSerializer
 def home_view(request, *args, **kwargs):
 	return render(request=request, template_name="pages/home.html", status=200, context={})
 
-def all_tweet_api(request, *args, **kwargs):
+@api_view(['GET'])
+def all_tweet_api(Request, *args, **kwargs):
 	tweet_list = Tweet.objects.all()
-	data = [{"id": x.id, "content": x.content} for x in tweet_list]
-	res = {
-		"response": data
-	}
-	return JsonResponse(res)
+	serializer = TweetSerializer(tweet_list, many=True)
+	return Response(serializer.data, status=200)
 
 @api_view(['GET'])
 def tweet_detail_api(Request, tweet_id, *args, **kwargs):
