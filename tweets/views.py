@@ -4,7 +4,8 @@ from django.http import JsonResponse
 from django.http.response import Http404
 from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from tweets.models import Tweet
 from tweets.serializers import TweetSerializer
@@ -29,6 +30,7 @@ def tweet_detail_api(Request, tweet_id, *args, **kwargs):
 		return Response({ "message" : "Tweet Not Found"}, status=400)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def tweet_delete_api(Request, tweet_id, *args, **kwargs):
 	try:
 		tweet_obj = Tweet.objects.get(id=tweet_id)
@@ -38,10 +40,11 @@ def tweet_delete_api(Request, tweet_id, *args, **kwargs):
 		return Response({"message": "Tweet id is invalid"}, status=400)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def tweet_create_api(Request, *args, **kwargs):
 	serializer = TweetSerializer(data=Request.data)
 	print(Request)
 	if serializer.is_valid(raise_exception=True):
-		serializer.save()
+		serializer.save(user=Request.user)
 		return Response(serializer.data, status=200)
 	return Response({"message": "Bad Request"}, status=400)

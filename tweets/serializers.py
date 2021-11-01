@@ -8,7 +8,7 @@ class TweetSerializer(serializers.ModelSerializer):
         model = Tweet
         fields = ['content', 'timestamp', 'id']
 
-    # def validate_content(self, value):
-    #     if (len(value) > MAX_TWEET_LENGTH):
-    #         raise serializers.ValidationError("Tweet is longer than max length")
-    #     return value
+    def validate_content(self, value):
+        if (len(value) > MAX_TWEET_LENGTH):
+            raise serializers.ValidationError("Tweet is longer than max length")
+        return value
