@@ -14,7 +14,7 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from tweets.models import Tweet
-from tweets.serializers import TweetLikeSerializer, TweetSerializer
+from tweets.serializers import TweetDetailSerializer, TweetLikeSerializer, TweetCreateSerializer
 
 def home_view(request, *args, **kwargs):
 	return render(request=request, template_name="pages/home.html", status=200, context={})
@@ -22,7 +22,7 @@ def home_view(request, *args, **kwargs):
 @api_view(['GET'])
 def all_tweet_api(Request, *args, **kwargs):
 	tweet_list = Tweet.objects.all().order_by("-timestamp")
-	serializer = TweetSerializer(tweet_list, many=True)
+	serializer = TweetDetailSerializer(tweet_list, many=True)
 	return Response(serializer.data, status=200)
 
 
@@ -30,7 +30,7 @@ def all_tweet_api(Request, *args, **kwargs):
 def tweet_detail_api(Request, tweet_id, *args, **kwargs):
 	try:
 		tweet_obj = Tweet.objects.get(id=tweet_id)
-		serializer = TweetSerializer(tweet_obj)
+		serializer = TweetDetailSerializer(tweet_obj)
 		return Response(serializer.data, status=200)
 	except:
 		return Response({ "message" : "Tweet Not Found"}, status=400)
@@ -73,13 +73,13 @@ def retweet_api(Request, *args, **kwargs):
 		return Response({"message": "Tweet id is invalid"}, status=400)
 	tweet_obj = tweet_qs.first()
 	new_tweet = Tweet.objects.create(user=Request.user, retweet_obj=tweet_obj, content=req_data.get('content'))
-	tweet_serializer = TweetSerializer(new_tweet)
+	tweet_serializer = TweetCreateSerializer(new_tweet)
 	return Response(tweet_serializer.data	, status=200)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def tweet_create_api(Request, *args, **kwargs):
-	serializer = TweetSerializer(data=Request.data)
+	serializer = TweetCreateSerializer(data=Request.data)
 	print(Request)
 	if serializer.is_valid(raise_exception=True):
 		serializer.save(user=Request.user)
