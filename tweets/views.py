@@ -64,6 +64,17 @@ def tweet_like_api(Request, *args, **kwargs):
 		tweet_obj.likes.remove(Request.user)
 	return Response({"message": "Tweet liked successfully"}, status=200)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def retweet_api(Request, *args, **kwargs):
+	req_data = Request.data
+	tweet_qs = Tweet.objects.filter(id=req_data.get('tweet_id'))
+	if not tweet_qs.exists():
+		return Response({"message": "Tweet id is invalid"}, status=400)
+	tweet_obj = tweet_qs.first()
+	new_tweet = Tweet.objects.create(user=Request.user, retweet_obj=tweet_obj, content=req_data.get('content'))
+	tweet_serializer = TweetSerializer(new_tweet)
+	return Response(tweet_serializer.data	, status=200)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

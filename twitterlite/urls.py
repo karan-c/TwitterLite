@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from tweets.views import all_tweet_api, home_view, tweet_create_api, tweet_delete_api, tweet_detail_api, tweet_like_api
+from tweets.views import all_tweet_api, home_view, retweet_api, tweet_create_api, tweet_delete_api, tweet_detail_api, tweet_like_api
 
 urlpatterns = [
     path('', home_view),
@@ -25,5 +25,6 @@ urlpatterns = [
     path('tweet/<int:tweet_id>/', tweet_detail_api),
     path('delete-tweet/<int:tweet_id>/', tweet_delete_api),
     path('create-tweet/', tweet_create_api),
-    path('like-tweet/', tweet_like_api)
+    path('like-tweet/', tweet_like_api),
+    path('retweet/', retweet_api)
 ]

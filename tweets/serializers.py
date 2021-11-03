@@ -6,6 +6,7 @@ from .models import Tweet
 class TweetLikeSerializer(serializers.Serializer):
     tweet_id = serializers.IntegerField()
     action = serializers.CharField()
+    content = serializers.CharField(allow_blank=True, required=False, max_length=MAX_TWEET_LENGTH)
 
 class TweetSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField()
