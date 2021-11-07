@@ -1,22 +1,11 @@
-"""twitterlite URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path
 
-from tweets.views import all_tweet_api, home_view, retweet_api, tweet_create_api, tweet_delete_api, tweet_detail_api, tweet_like_api
+from tweets.views import (all_tweet_api, home_view, retweet_api, tweet_create_api, tweet_delete_api, tweet_detail_api, tweet_like_api)
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 urlpatterns = [
     path('', home_view),
@@ -26,5 +15,7 @@ urlpatterns = [
     path('delete-tweet/<int:tweet_id>/', tweet_delete_api),
     path('create-tweet/', tweet_create_api),
     path('like-tweet/', tweet_like_api),
-    path('retweet/', retweet_api)
+    path('retweet/', retweet_api),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
