@@ -4,10 +4,6 @@
 '''
 
 
-from http.client import responses
-from django import http
-from django.http import JsonResponse
-from django.http.response import Http404
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import action, api_view, permission_classes

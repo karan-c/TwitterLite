@@ -1,7 +1,7 @@
-from django.db import models
-from django.db.models import fields
 from rest_framework import serializers
 from twitterlite.settings import MAX_TWEET_LENGTH
+from users.models import User
+from users.serializers import UserSerializer
 from .models import Tweet
 
 class TweetLikeSerializer(serializers.Serializer):
@@ -12,6 +12,7 @@ class TweetLikeSerializer(serializers.Serializer):
 class TweetDetailSerializer(serializers.ModelSerializer):
 	likes = serializers.SerializerMethodField(read_only=True)
 	retweet_obj = serializers.SerializerMethodField(read_only=True)
+	user = serializers.SerializerMethodField(read_only=True)
 	class Meta:
 		model = Tweet
 		fields = ['content', 'timestamp', 'id', 'user', 'likes', 'retweet_obj']
@@ -24,6 +25,9 @@ class TweetDetailSerializer(serializers.ModelSerializer):
 			return TweetDetailSerializer(obj.retweet_obj).data
 		else:
 			return None
+
+	def get_user(self, obj):
+		return UserSerializer(obj.user).data
 
 class TweetCreateSerializer(serializers.ModelSerializer):
 	likes = serializers.SerializerMethodField(read_only=True)
