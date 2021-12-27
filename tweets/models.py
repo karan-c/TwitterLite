@@ -14,5 +14,6 @@ class Tweet (models.Model):
     content = models.TextField(blank=True, null=True)
     image = models.FileField(upload_to='images/', blank=True, null=True)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='tweet_user', blank=True, through=TweetLike)
+    retweet_count = models.IntegerField(default=0)
     retweet_obj = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)

@@ -68,6 +68,8 @@ def retweet_api(Request, *args, **kwargs):
 	if not tweet_qs.exists():
 		return Response({"message": "Tweet id is invalid"}, status=400)
 	tweet_obj = tweet_qs.first()
+	tweet_obj.retweet_count += 1
+	tweet_obj.save()
 	new_tweet = Tweet.objects.create(user=Request.user, retweet_obj=tweet_obj, content=req_data.get('content'))
 	tweet_serializer = TweetCreateSerializer(new_tweet)
 	return Response(tweet_serializer.data	, status=200)

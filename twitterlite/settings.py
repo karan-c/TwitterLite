@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     #third-party-libs
     'rest_framework', 
     'rest_framework_simplejwt',
+    'corsheaders',
     #internal
     'users',
     'tweets'
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'twitterlite.urls'
@@ -142,3 +144,7 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=5),
 }
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+]
