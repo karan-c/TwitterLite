@@ -18,7 +18,7 @@ def home_view(request, *args, **kwargs):
 @api_view(['GET'])
 def all_tweet_api(Request, *args, **kwargs):
 	tweet_list = Tweet.objects.all().order_by("-timestamp")
-	serializer = TweetDetailSerializer(tweet_list, many=True)
+	serializer = TweetDetailSerializer(tweet_list, many=True, context={"user_id": Request.user})
 	return Response(serializer.data, status=200)
 
 
