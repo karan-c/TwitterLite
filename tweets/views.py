@@ -18,7 +18,7 @@ def home_view(request, *args, **kwargs):
 @api_view(['GET'])
 def all_tweet_api(Request, *args, **kwargs):
 	tweet_list = Tweet.objects.all().order_by("-timestamp")
-	serializer = TweetDetailSerializer(tweet_list, many=True, context={"user_id": Request.user})
+	serializer = TweetDetailSerializer(tweet_list, many=True, context={"user_name": Request.user})
 	return Response(serializer.data, status=200)
 
 
@@ -26,7 +26,7 @@ def all_tweet_api(Request, *args, **kwargs):
 def tweet_detail_api(Request, tweet_id, *args, **kwargs):
 	try:
 		tweet_obj = Tweet.objects.get(id=tweet_id)
-		serializer = TweetDetailSerializer(tweet_obj)
+		serializer = TweetDetailSerializer(tweet_obj, context={"user_name": Request.user})
 		return Response(serializer.data, status=200)
 	except:
 		return Response({ "message" : "Tweet Not Found"}, status=400)

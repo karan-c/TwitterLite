@@ -10,10 +10,10 @@ class TweetLikeSerializer(serializers.Serializer):
 	content = serializers.CharField(allow_blank=True, required=False, max_length=MAX_TWEET_LENGTH)
 
 class TweetDetailSerializer(serializers.ModelSerializer):
-	likes = serializers.SerializerMethodField(read_only=True)
-	retweet_obj = serializers.SerializerMethodField(read_only=True)
-	user = serializers.SerializerMethodField(read_only=True)
-	is_liked = serializers.SerializerMethodField(read_only=True)
+	likes = serializers.SerializerMethodField()
+	retweet_obj = serializers.SerializerMethodField()
+	user = serializers.SerializerMethodField()
+	is_liked = serializers.SerializerMethodField()
 	class Meta:
 		model = Tweet
 		fields = ['content', 'timestamp', 'id', 'user', 'likes', 'retweet_obj', 'retweet_count', 'is_liked']
@@ -23,12 +23,12 @@ class TweetDetailSerializer(serializers.ModelSerializer):
 
 	def get_retweet_obj(self, obj):
 		if obj.retweet_obj != None:
-			return TweetDetailSerializer(obj.retweet_obj).data
+			return TweetDetailSerializer(obj.retweet_obj, context={"user_name": self.context.get("user_name")}).data
 		else:
 			return None
 
 	def get_is_liked(self, obj):
-		user_obj = obj.likes.filter(user_name = self.context.get('user_id'))
+		user_obj = obj.likes.filter(user_name = self.context.get("user_name"))
 		return user_obj.exists()
 
 	def get_user(self, obj):
