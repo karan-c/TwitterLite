@@ -10,10 +10,10 @@ class TweetLikeSerializer(serializers.Serializer):
 	content = serializers.CharField(allow_blank=True, required=False, max_length=MAX_TWEET_LENGTH)
 
 class TweetDetailSerializer(serializers.ModelSerializer):
-	likes = serializers.SerializerMethodField()
-	retweet_obj = serializers.SerializerMethodField()
-	user = serializers.SerializerMethodField()
-	is_liked = serializers.SerializerMethodField()
+	likes = serializers.SerializerMethodField(read_only=True)
+	retweet_obj = serializers.SerializerMethodField(read_only=True)
+	user = serializers.SerializerMethodField(read_only=True)
+	is_liked = serializers.SerializerMethodField(read_only=True)
 	class Meta:
 		model = Tweet
 		fields = ['content', 'timestamp', 'id', 'user', 'likes', 'retweet_obj', 'retweet_count', 'is_liked']
