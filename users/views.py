@@ -42,3 +42,38 @@ def update_user(Request, *args, **kwargs):
     user_obj.save()
     user_serializer = UserDetailsSerializer(user_obj)
     return Response(user_serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def follow_user(Request, *args, **kwargs):
+    req_data = Request.data
+    following_user = User.objects.filter(id = req_data.get("id"))
+    follower_user = User.objects.filter(user_name = Request.user)
+    if not follower_user.exists() or not following_user.exists():
+        return Response({"message": "Invalid users details"}, status=status.HTTP_404_NOT_FOUND)
+    follower_user = follower_user.first()
+    following_user = following_user.first()
+    follower_user.followings.add(following_user)
+    follower_user.save()
+    return Response({"message": "Followers updated successfully"}, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def get_followers_list(Request, user_id, *args, **kwargs):
+    user_obj = User.objects.filter(id = user_id)
+    if not user_obj.exists():
+        return Response({"message": "Invalid User id"}, status=status.HTTP_404_NOT_FOUND)
+    user_obj = user_obj.first()
+    followers_list = user_obj.followers.all()
+    user_serializer = UserDetailsSerializer(followers_list, many=True)
+    return Response(user_serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def get_followings_list(Request, user_id, *args, **kwargs):
+    user_obj = User.objects.filter(id = user_id)
+    if not user_obj.exists():
+        return Response({"message": "Invalid User id"}, status=status.HTTP_404_NOT_FOUND)
+    user_obj = user_obj.first()
+    followings_list = user_obj.followings.all()
+    user_serializer = UserDetailsSerializer(followings_list, many=True)
+    return Response(user_serializer.data, status=status.HTTP_200_OK)
