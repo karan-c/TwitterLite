@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import all_tweet_api, retweet_api, tweet_create_api, tweet_delete_api, tweet_detail_api, tweet_like_api
+from .views import all_tweet_api, my_feed, retweet_api, tweet_create_api, tweet_delete_api, tweet_detail_api, tweet_like_api, tweets_by_user
 
 urlpatterns = [
     path('tweet/', all_tweet_api),
@@ -9,4 +9,6 @@ urlpatterns = [
     path('create-tweet/', tweet_create_api),
     path('like-tweet/', tweet_like_api),
     path('retweet/', retweet_api),
+    path('feed/', my_feed),
+    path('tweets-by-user/<int:user_id>/', tweets_by_user)
 ]
