@@ -104,3 +104,12 @@ def tweets_by_user(Request, user_id, *args, **kwargs):
 	tweet_list = user_obj.first().tweet_set
 	serializer = TweetDetailSerializer(tweet_list, many=True)
 	return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def tweets_by_username(Request, user_name, *args, **kwargs):
+	user_obj = User.objects.filter(user_name = user_name)
+	if not user_obj.exists():
+		return Response({"message": "Invalid Username"}, status=status.HTTP_404_NOT_FOUND)
+	tweet_list = user_obj.first().tweet_set
+	serializer = TweetDetailSerializer(tweet_list, many=True)
+	return Response(serializer.data, status=status.HTTP_200_OK)
