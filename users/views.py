@@ -54,6 +54,11 @@ def update_user(Request, *args, **kwargs):
         user_obj.last_name = req_data.get('last_name')
     if 'bio' in req_data:
         user_obj.bio = req_data.get('bio')
+    if 'user_name' in req_data and req_data.get('user_name') != user_obj.user_name:
+        user_exists = User.objects.filter(user_name = req_data.get('user_name'))
+        if user_exists.exists():
+            return Response({"message": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
+        user_obj.user_name = req_data.get('user_name')
     user_obj.save()
     user_serializer = UserDetailsSerializer(user_obj)
     return Response(user_serializer.data, status=status.HTTP_200_OK)
