@@ -16,7 +16,7 @@ class TweetDetailSerializer(serializers.ModelSerializer):
 	is_liked = serializers.SerializerMethodField(read_only=True)
 	class Meta:
 		model = Tweet
-		fields = ['content', 'timestamp', 'id', 'user', 'likes', 'retweet_obj', 'retweet_count', 'is_liked']
+		fields = ['content', 'timestamp', 'id', 'user', 'likes', 'retweet_obj', 'retweet_count', 'is_liked', 'image']
 	
 	def get_likes(self, obj):
 		return obj.likes.count()
@@ -38,7 +38,7 @@ class TweetCreateSerializer(serializers.ModelSerializer):
 	likes = serializers.SerializerMethodField(read_only=True)
 	class Meta:
 		model = Tweet
-		fields = ['content', 'timestamp', 'id', 'likes']
+		fields = ['content', 'timestamp', 'id', 'likes', 'image', 'image_delete_hash']
 
 	def get_likes(self, obj):
 		return obj.likes.count()

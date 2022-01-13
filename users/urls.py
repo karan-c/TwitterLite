@@ -8,6 +8,6 @@ urlpatterns = [
     path('username/<str:user_name>/', user_details_by_user_name),
     path('update-user/', update_user),
     path('follow-user/', follow_user),
-    path('followers-list/<int:user_id>', get_followers_list),
-    path('followings-list/<int:user_id>', get_followings_list)
+    path('followers-list/<int:user_id>/', get_followers_list),
+    path('followings-list/<int:user_id>/', get_followings_list)
 ]

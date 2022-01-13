@@ -4,6 +4,8 @@
 '''
 
 
+from email import header
+from os import stat
 from django.shortcuts import render
 from django.db.models import Q
 from rest_framework.response import Response
@@ -14,9 +16,22 @@ from rest_framework import status
 from tweets.models import Tweet
 from tweets.serializers import TweetDetailSerializer, TweetLikeSerializer, TweetCreateSerializer
 from users.models import User
+from requests import request
 
 def home_view(request, *args, **kwargs):
 	return render(request=request, template_name="pages/home.html", status=status.HTTP_200_OK, context={})
+
+def image_upload(base64):
+	imgur_api = 'https://api.imgur.com/3/image'
+	body = {
+		'image': base64
+	}
+	headers = {
+		'Authorization': 'Client-ID 6098f21a05cc688'
+	}
+	files = []
+	response = request("POST", imgur_api, headers=headers, data=body, files=files)
+	return response.json()
 
 @api_view(['GET'])
 def all_tweet_api(Request, *args, **kwargs):
@@ -73,15 +88,36 @@ def retweet_api(Request, *args, **kwargs):
 	tweet_obj = tweet_qs.first()
 	tweet_obj.retweet_count += 1
 	tweet_obj.save()
-	new_tweet = Tweet.objects.create(user=Request.user, retweet_obj=tweet_obj, content=req_data.get('content'))
+	new_tweet = None
+	if 'image' in req_data:
+		response = image_upload(req_data.get('image'))
+		if response.get('status') == 200:
+			new_tweet = Tweet.objects.create (
+				user=Request.user,
+				retweet_obj=tweet_obj, 
+				content=req_data.get('content'), 
+				image=response.get('data').get('link'), 
+				image_delete_hash = response.get('data').get('deletehash')
+			)
+		else :
+			return Response({"message": "Something went wrong while uploading image. Please try again later."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+	else:
+		new_tweet = Tweet.objects.create(user=Request.user, retweet_obj=tweet_obj, content=req_data.get('content'))
 	tweet_serializer = TweetCreateSerializer(new_tweet)
 	return Response(tweet_serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def tweet_create_api(Request, *args, **kwargs):
-	serializer = TweetCreateSerializer(data=Request.data)
-	print(Request)
+	final_data = Request.data
+	if 'image' in Request.data:
+		response = image_upload(Request.data.get('image'))
+		if response.get('status') == 200:
+			final_data['image'] = response.get('data').get('link')
+			final_data['image_delete_hash'] = response.get('data').get('deletehash')
+		else:
+			return Response({"message": "Something went wrong while uploading image. Please try again later."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+	serializer = TweetCreateSerializer(data=final_data)
 	if serializer.is_valid(raise_exception=True):
 		serializer.save(user=Request.user)
 		return Response(serializer.data, status=status.HTTP_200_OK)
