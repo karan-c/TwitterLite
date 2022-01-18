@@ -12,7 +12,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
-from rest_framework import status
+from rest_framework import status, generics
+from rest_framework.pagination import PageNumberPagination 
 from tweets.models import Tweet
 from tweets.serializers import TweetDetailSerializer, TweetLikeSerializer, TweetCreateSerializer
 from users.models import User
@@ -33,12 +34,21 @@ def image_upload(base64):
 	response = request("POST", imgur_api, headers=headers, data=body, files=files)
 	return response.json()
 
-@api_view(['GET'])
-def all_tweet_api(Request, *args, **kwargs):
-	tweet_list = Tweet.objects.all().order_by("-timestamp")
-	serializer = TweetDetailSerializer(tweet_list, many=True, context={"user_name": Request.user})
-	return Response(serializer.data, status=status.HTTP_200_OK)
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 10
+class TweetLists(generics.ListAPIView):
+	queryset = Tweet.objects.all().order_by("-timestamp")
+	serializer_class = TweetDetailSerializer
+	pagination_class = StandardResultsSetPagination
+
+	# def get_serializer_context(self):
+	# 	print(Request.user)
+	# 	return {
+	# 		"user_name": Request.user
+	# 	}
 
 @api_view(['GET'])
 def tweet_detail_api(Request, tweet_id, *args, **kwargs):
@@ -137,15 +147,21 @@ def tweets_by_user(Request, user_id, *args, **kwargs):
 	user_obj = User.objects.filter(id=user_id)
 	if not user_obj.exists():
 		return Response({"message": "Invalid User id"}, status=status.HTTP_404_NOT_FOUND)
-	tweet_list = user_obj.first().tweet_set
+	tweet_list = user_obj.first().tweet_set.order_by('-timestamp')
 	serializer = TweetDetailSerializer(tweet_list, many=True)
 	return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def tweets_by_username(Request, user_name, *args, **kwargs):
-	user_obj = User.objects.filter(user_name = user_name)
+	user_obj = User.objects.filter(user_name=user_name)
 	if not user_obj.exists():
 		return Response({"message": "Invalid Username"}, status=status.HTTP_404_NOT_FOUND)
-	tweet_list = user_obj.first().tweet_set
+	tweet_list = user_obj.first().tweet_set.order_by('-timestamp')
 	serializer = TweetDetailSerializer(tweet_list, many=True)
 	return Response(serializer.data, status=status.HTTP_200_OK)
+
+# @api_view(['GET'])
+# def all_tweet_api(Request, *args, **kwargs):
+# 	tweet_list = Tweet.objects.all().order_by("-timestamp")
+# 	serializer = TweetDetailSerializer(tweet_list, many=True, context={"user_name": Request.user})
+# 	return Response(serializer.data, status=status.HTTP_200_OK)

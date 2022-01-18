@@ -22,13 +22,15 @@ class TweetDetailSerializer(serializers.ModelSerializer):
 		return obj.likes.count()
 
 	def get_retweet_obj(self, obj):
+		user_name = self.context.get('user_name') if 'user_name' in self.context else self.context.get('request').user
 		if obj.retweet_obj != None:
-			return TweetDetailSerializer(obj.retweet_obj, context={"user_name": self.context.get("user_name")}).data
+			return TweetDetailSerializer(obj.retweet_obj, context={"user_name": user_name}).data
 		else:
 			return None
 
 	def get_is_liked(self, obj):
-		user_obj = obj.likes.filter(user_name = self.context.get("user_name"))
+		user_name = self.context.get('user_name') if 'user_name' in self.context else self.context.get('request').user
+		user_obj = obj.likes.filter(user_name = user_name)
 		return user_obj.exists()
 
 	def get_user(self, obj):
