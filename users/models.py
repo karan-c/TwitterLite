@@ -41,7 +41,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     bio = models.TextField(_('bio'), max_length=500, blank=True)
     is_staff = models.BooleanField(default=False)
     followings = models.ManyToManyField("self", blank=True, symmetrical=False, related_name="followers")
-
+    profile_pic = models.URLField(blank=True, null=True)
+    profile_pic_hash = models.CharField(max_length=50, blank=True, null=True)
     objects = CustomAccountManager()
 
     USERNAME_FIELD = 'user_name'

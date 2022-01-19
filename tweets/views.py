@@ -4,8 +4,6 @@
 '''
 
 
-from email import header
-from os import stat
 from django.shortcuts import render
 from django.db.models import Q
 from rest_framework.response import Response
@@ -139,7 +137,7 @@ def my_feed(Request, *args, **kwargs):
 	user = Request.user
 	following_list = user.followings.values_list('id', flat=True)
 	tweet_list = Tweet.objects.filter(Q(user__id__in = following_list) | Q(user = user)).order_by('-timestamp')
-	serializer = TweetDetailSerializer(tweet_list, many=True)
+	serializer = TweetDetailSerializer(tweet_list, many=True,context={'user_name': Request.user})
 	return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
@@ -148,7 +146,7 @@ def tweets_by_user(Request, user_id, *args, **kwargs):
 	if not user_obj.exists():
 		return Response({"message": "Invalid User id"}, status=status.HTTP_404_NOT_FOUND)
 	tweet_list = user_obj.first().tweet_set.order_by('-timestamp')
-	serializer = TweetDetailSerializer(tweet_list, many=True)
+	serializer = TweetDetailSerializer(tweet_list, many=True, context={'user_name': Request.user})
 	return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
@@ -157,7 +155,7 @@ def tweets_by_username(Request, user_name, *args, **kwargs):
 	if not user_obj.exists():
 		return Response({"message": "Invalid Username"}, status=status.HTTP_404_NOT_FOUND)
 	tweet_list = user_obj.first().tweet_set.order_by('-timestamp')
-	serializer = TweetDetailSerializer(tweet_list, many=True)
+	serializer = TweetDetailSerializer(tweet_list, many=True, context = {'user_name' : Request.user})
 	return Response(serializer.data, status=status.HTTP_200_OK)
 
 # @api_view(['GET'])

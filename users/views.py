@@ -7,6 +7,19 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from .models import User
 from .serializers import UserCreateSerializer, UserDetailsSerializer
+from requests import request
+
+def image_upload(base64):
+	imgur_api = 'https://api.imgur.com/3/image'
+	body = {
+		'image': base64
+	}
+	headers = {
+		'Authorization': 'Client-ID 6098f21a05cc688'
+	}
+	files = []
+	response = request("POST", imgur_api, headers=headers, data=body, files=files)
+	return response.json()
 
 @api_view(['POST'])
 def register_user(Request, *args, **kwargs):
@@ -59,6 +72,13 @@ def update_user(Request, *args, **kwargs):
         if user_exists.exists():
             return Response({"message": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
         user_obj.user_name = req_data.get('user_name')
+    if 'profile_pic' in req_data:
+        response = image_upload(req_data.get('profile_pic'))
+        if response.get('status') == 200:
+            user_obj.profile_pic = response.get('data').get('link')
+            user_obj.profile_pic_hash = response.get('data').get('deletehash')
+        else:
+            return Response({"message": "Something went wrong while uploading image. Please try again later."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     user_obj.save()
     user_serializer = UserDetailsSerializer(user_obj)
     return Response(user_serializer.data, status=status.HTTP_200_OK)

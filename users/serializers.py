@@ -20,14 +20,14 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['user_name', 'first_name', 'last_name']
+        fields = ['user_name', 'first_name', 'last_name', 'profile_pic']
 
 class UserDetailsSerializer(serializers.ModelSerializer):
     followers_count = serializers.SerializerMethodField()
     followings_count = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields = ['user_name', 'first_name', 'last_name', 'id', 'bio', 'is_staff', 'followers_count', 'followings_count']
+        fields = ['user_name', 'first_name', 'last_name', 'id', 'bio', 'is_staff', 'followers_count', 'followings_count', 'profile_pic']
     
     def get_followers_count(self, obj):
         return obj.followers.count()
