@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
-import django_heroku
+# import django_heroku
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -154,7 +154,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
 ]
 
-IMGUR_CLIENT_ID = os.environ['IMGUR_CLIENT_ID']
-# IMGUR_CLIENT_ID = config('IMGUR_CLIENT_ID')
+# IMGUR_CLIENT_ID = os.environ['IMGUR_CLIENT_ID']
+IMGUR_CLIENT_ID = config('IMGUR_CLIENT_ID')
 # Activate Django-Heroku.
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
