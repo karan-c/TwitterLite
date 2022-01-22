@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import environ
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,12 +25,12 @@ environ.Env.read_env()
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'twitterlite-karan.herokuapp.com']
 MAX_TWEET_LENGTH = 240
 
 # Application definition
@@ -154,4 +155,4 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
 ]
 
-IMGUR_CLIENT_ID = env('IMGUR_CLIENT_ID')
+IMGUR_CLIENT_ID = os.environ['IMGUR_CLIENT_ID']
