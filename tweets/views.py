@@ -4,6 +4,7 @@
 '''
 
 
+from django.conf import settings
 from django.shortcuts import render
 from django.db.models import Q
 from rest_framework.response import Response
@@ -26,7 +27,7 @@ def image_upload(base64):
 		'image': base64
 	}
 	headers = {
-		'Authorization': 'Client-ID 6098f21a05cc688'
+		'Authorization': 'Client-ID '+ settings.IMGUR_CLIENT_ID
 	}
 	files = []
 	response = request("POST", imgur_api, headers=headers, data=body, files=files)

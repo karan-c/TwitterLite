@@ -8,6 +8,7 @@ from rest_framework.request import Request
 from .models import User
 from .serializers import UserCreateSerializer, UserDetailsSerializer
 from requests import request
+from django.conf import settings
 
 def image_upload(base64):
 	imgur_api = 'https://api.imgur.com/3/image'
@@ -15,7 +16,7 @@ def image_upload(base64):
 		'image': base64
 	}
 	headers = {
-		'Authorization': 'Client-ID 6098f21a05cc688'
+		'Authorization': 'Client-ID ' + settings.IMGUR_CLIENT_ID
 	}
 	files = []
 	response = request("POST", imgur_api, headers=headers, data=body, files=files)
