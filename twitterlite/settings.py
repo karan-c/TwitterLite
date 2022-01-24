@@ -29,7 +29,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'twitterlite-karan.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'twitterlite-karan.herokuapp.com', 'karanc.pythonanywhere.com']
 MAX_TWEET_LENGTH = 240
 
 # Application definition
@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #third-party-libs
-    'rest_framework', 
+    'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
     #internal
@@ -130,6 +130,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/home/karanc/TwitterLite/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
