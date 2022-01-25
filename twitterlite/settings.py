@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
-import os
-# import django_heroku
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,10 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
-# SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'twitterlite-karan.herokuapp.com', 'karanc.pythonanywhere.com']
 MAX_TWEET_LENGTH = 240
@@ -92,6 +89,15 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'karanc$twitterlite',
+#         'HOST': 'karanc.mysql.pythonanywhere-services.com',
+#         'USER': 'karanc',
+#         'PASSWORD': '',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -155,7 +161,5 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
 ]
 
-# IMGUR_CLIENT_ID = os.environ['IMGUR_CLIENT_ID']
 IMGUR_CLIENT_ID = config('IMGUR_CLIENT_ID')
 # Activate Django-Heroku.
-# django_heroku.settings(locals())
