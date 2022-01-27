@@ -7,6 +7,7 @@
 from django.conf import settings
 from django.shortcuts import render
 from django.db.models import Q
+from django.template import context
 from rest_framework.response import Response
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -112,7 +113,7 @@ def retweet_api(Request, *args, **kwargs):
 			return Response({"message": "Something went wrong while uploading image. Please try again later."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 	else:
 		new_tweet = Tweet.objects.create(user=Request.user, retweet_obj=tweet_obj, content=req_data.get('content'))
-	tweet_serializer = TweetCreateSerializer(new_tweet)
+	tweet_serializer = TweetDetailSerializer(new_tweet, context={'user_name': Request.user})
 	return Response(tweet_serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
@@ -129,7 +130,8 @@ def tweet_create_api(Request, *args, **kwargs):
 	serializer = TweetCreateSerializer(data=final_data)
 	if serializer.is_valid(raise_exception=True):
 		serializer.save(user=Request.user)
-		return Response(serializer.data, status=status.HTTP_200_OK)
+		details_serializer = TweetDetailSerializer(Tweet.objects.get(id=serializer.data['id']), context={'user_name': Request.user})
+		return Response(details_serializer.data, status=status.HTTP_200_OK)
 	return Response({"message": "Bad Request"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
