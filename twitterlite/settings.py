@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
-import os
 # import django_heroku
 from decouple import config
 
@@ -87,11 +86,13 @@ WSGI_APPLICATION = 'twitterlite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'karanc$twitterlite',
+        'HOST': 'karanc.mysql.pythonanywhere-services.com',
+        'USER': 'karanc',
+        'PASSWORD': 'Marvel@2020',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
